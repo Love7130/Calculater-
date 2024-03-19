@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculator</title>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f3f3f3; /* Light gray background */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* VS Code font */
+    }
+
+    .Calculator
+    {
+      width: 340px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      background: #ffffff; /* White background */
+      border: 1px solid #ccc; /* Light gray border */
+    }
+
+    .Buttons
+    {
+      display: grid;
+      grid-gap: 10px;
+      /* Adjusted grid-template-columns for even distribution */
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    }
+
+    #Value
+    {
+      grid-column: span 4;
+      user-select: none;
+      text-align: end;
+      color: #333; /* Dark text color */
+      height: 100px;
+      line-height: 100px;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      padding: 0 20px;
+      font-size: 2em;
+      background: #f3f3f3; /* Light gray background */
+      margin-bottom: 12px;
+    }
+
+    .Buttons span
+    {
+      padding: 10px;
+      cursor: pointer;
+      /* Removed min-width for flexibility */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      color: #333; /* Dark text color */
+      background: #ffffff; /* White background */
+      border: 1px solid #ccc; /* Light gray border */
+      border-radius: 4px;
+    }
+
+    .Buttons span:hover
+    {
+      background: #f0f0f0; /* Light gray hover background */
+    }
+
+    .Buttons span:active
+    {
+      background: #e0e0e0; /* Slightly darker active background */
+    }
+  </style>
+</head>
+<body>
+  <div class="Calculator">
+    <h2 id="Value"></h2>
+    <div class="Buttons">
+      <span>C</span>
+      <span>=</span>
+      <span>.</span>
+      <span>+</span>
+      <span>-</span>
+      <span>÷</span>
+      <span>×</span>
+      <span>9</span>
+      <span>8</span>
+      <span>7</span>
+      <span>6</span>
+      <span>5</span>
+      <span>4</span>
+      <span>3</span>
+      <span>2</span>
+      <span>1</span>
+      <span>0</span>
+      <span>00</span>
+    </div>
+  </div>
+
+  <script>
+    var displayValue = document.getElementById("Value");
+    var buttons = document.querySelectorAll(".Buttons span");
+
+    buttons.forEach(function(button) {
+      button.addEventListener("click", function() {
+        var buttonValue = this.textContent;
+        var currentValue = displayValue.textContent;
+
+        if (buttonValue === "=") {
+          displayValue.textContent = calculate(currentValue);
+        } else if (buttonValue === "C") {
+          displayValue.textContent = "";
+        } else {
+          if (currentValue === "0") {
+            displayValue.textContent = "";
+          }
+          displayValue.textContent += buttonValue;
+        }
+      });
+    });
+
+    document.addEventListener("keydown", function(event) {
+      var keyPressed = event.key;
+      buttons.forEach(function(button) {
+        if (button.textContent === keyPressed) {
+          button.click();
+        }
+      });
+
+      if (event.key === "Enter" && event.target.tagName !== "INPUT") {
+        var equalsButton = document.querySelector('.Buttons span:nth-child(2)');
+        equalsButton.click();
+      } else if (event.key === "Backspace") {
+        var clearButton = document.querySelector('.Buttons span:nth-child(1)');
+        clearButton.click();
+      }
+    });
+
+    function calculate(expression) {
+      var operator = "";
+      var num1 = "";
+      var num2 = "";
+
+      for (var i = 0; i < expression.length; i++) {
+        if (expression[i] === "+" || expression[i] === "-" || expression[i] === "*" || expression[i] === "/") {
+          operator = expression[i];
+          num1 = parseFloat(expression.slice(0, i));
+          num2 = parseFloat(expression.slice(i + 1));
+          break;
+        }
+      }
+
+      switch (operator) {
+        case "+":
+          return num1 + num2;
+        case "-":
+          return num1 - num2;
+        case "*":
+          return num1 * num2;
+        case "/":
+          if (num2 !== 0) {
+            return num1 / num2;
+          } else {
+            return "Err: Div by 0";
+          }
+        default:
+          return "Err: Not valid exp";
+      }
+    }
+  </script>
+</body>
+</html>
